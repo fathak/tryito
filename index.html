@@ -256,14 +256,24 @@ html,body{font-family:'Nunito',sans-serif;background:var(--bg);max-width:480px;m
         <button onclick="openUpiApp('gpay')" style="background:#fff;border:2px solid #eee;border-radius:14px;padding:13px 8px;cursor:pointer;font-family:inherit;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;">🟢 GPay</button>
         <button onclick="openUpiApp('phonepe')" style="background:#fff;border:2px solid #eee;border-radius:14px;padding:13px 8px;cursor:pointer;font-family:inherit;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;">🟣 PhonePe</button>
         <button onclick="openUpiApp('paytm')" style="background:#fff;border:2px solid #eee;border-radius:14px;padding:13px 8px;cursor:pointer;font-family:inherit;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;">🔵 Paytm</button>
-        <button onclick="openUpiApp('any')" style="background:#fff;border:2px solid #eee;border-radius:14px;padding:13px 8px;cursor:pointer;font-family:inherit;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;">📱 Other</button>
+        <button onclick="openUpiApp('any')" style="background:#fff;border:2px solid #eee;border-radius:14px;padding:13px 8px;cursor:pointer;font-family:inherit;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;">📱 Other UPI</button>
+      </div>
+
+      <!-- Mobile number pay option (shown only if UPI_MOBILE is set) -->
+      <div id="mobilePaySection" style="display:none;margin-bottom:10px;">
+        <div style="font-size:11px;font-weight:900;color:#888;text-transform:uppercase;margin-bottom:6px;text-align:left;">Or pay to mobile number</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+          <button onclick="openUpiMobile('gpay')" style="background:linear-gradient(135deg,#e8f5e9,#fff);border:2px solid #a5d6a7;border-radius:14px;padding:13px 8px;cursor:pointer;font-family:inherit;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;gap:5px;">🟢 GPay #</button>
+          <button onclick="openUpiMobile('phonepe')" style="background:linear-gradient(135deg,#ede7f6,#fff);border:2px solid #ce93d8;border-radius:14px;padding:13px 8px;cursor:pointer;font-family:inherit;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;gap:5px;">🟣 PhonePe #</button>
+        </div>
+        <div style="font-size:10px;color:#aaa;text-align:center;margin-top:5px;">Pays directly to registered mobile number</div>
       </div>
 
       <div style="background:#fff8e1;border-radius:10px;padding:10px 12px;margin-bottom:16px;border:1px solid #ffe082;text-align:left;">
         <p style="font-size:12px;color:#7c5800;margin:0;line-height:1.7;">
           1️⃣ Tap your UPI app above<br>
           2️⃣ Complete the payment<br>
-          3️⃣ Come back here &amp; tap <strong>"Next →"</strong>
+          3️⃣ Come back here &amp; tap <strong>"Paid → Enter UTR"</strong>
         </p>
       </div>
 
@@ -334,6 +344,9 @@ html,body{font-family:'Nunito',sans-serif;background:var(--bg);max-width:480px;m
 const APPS_URL = 'https://script.google.com/macros/s/AKfycbzTKyc_YgVy6DiNNHvHvQiX8rnAFpsI2d-yruKCxquwbwOjbW1ufmzAIDAOoznrO9tD/exec';
 const UPI_ID   = 'adnanrasheed00007@okicici';        // ← YOUR UPI ID (e.g. 9876543210@ybl or tryito@okaxis)
 const UPI_NAME = 'Adnaan Rasheed'; // ← Your name as shown in UPI apps
+// MOBILE NUMBER UPI — set your 10-digit mobile number to enable this option
+// Allows customers to pay to your registered mobile number directly
+const UPI_MOBILE = '8943947822';  // ← e.g. '9876543210' (your GPay/PhonePe registered number)
 
 // ── STATE ────────────────────────────────────────────────────
 let menu=[], banners=[], offerCardsData=[], cart={}, curCat='All', popId=null, bannerIdx=0, bannerTimer=null;
@@ -664,6 +677,10 @@ function goToPayment(){
   q('utrInput').value='';
   q('utrErr').style.display='none';
   q('upiOvrl').style.display='flex';
+  // Show mobile number pay option if configured
+  if(UPI_MOBILE && UPI_MOBILE.length===10){
+    q('mobilePaySection').style.display='block';
+  }
 }
 
 function buildUpiUrl(app){
@@ -684,6 +701,28 @@ function buildUpiUrl(app){
 function openUpiApp(app){
   window.location.href=buildUpiUrl(app);
   setTimeout(()=>{try{window.location.href=buildUpiUrl('any');}catch(e){}},1800);
+}
+
+// Pay to mobile number (bypasses UPI ID limit issues)
+function buildMobileUpiUrl(app){
+  const amt=pendingOrder?pendingOrder.total:0;
+  const note=encodeURIComponent('Tryito Order');
+  const nm=encodeURIComponent(UPI_NAME);
+  // Mobile number UPI uses bank handles - try common ones
+  // GPay uses @ybl (Yes Bank), PhonePe uses @ybl or @ibl
+  const handles={gpay:'ybl', phonepe:'ybl'};
+  const handle=handles[app]||'ybl';
+  const mobileUpi=encodeURIComponent(`${UPI_MOBILE}@${handle}`);
+  const map={
+    gpay:`gpay://upi/pay?pa=${mobileUpi}&pn=${nm}&am=${amt}&cu=INR&tn=${note}`,
+    phonepe:`phonepe://pay?pa=${mobileUpi}&pn=${nm}&am=${amt}&cu=INR&tn=${note}`,
+  };
+  return map[app]||`upi://pay?pa=${mobileUpi}&pn=${nm}&am=${amt}&cu=INR&tn=${note}`;
+}
+
+function openUpiMobile(app){
+  if(!UPI_MOBILE){alert('Mobile number not configured.');return;}
+  window.location.href=buildMobileUpiUrl(app);
 }
 
 function goToUtrStep(){
