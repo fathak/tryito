@@ -226,106 +226,6 @@ html,body{font-family:'Nunito',sans-serif;background:var(--bg);max-width:480px;m
   </div>
 </div>
 
-<!-- ══ UPI PAYMENT MODAL ══ -->
-<div id="upiOvrl" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:700;align-items:center;justify-content:center;padding:16px;overflow-y:auto;">
-  <div style="background:#fff;border-radius:22px;padding:24px 20px 28px;text-align:center;max-width:390px;width:100%;animation:popIn .3s;margin:auto;">
-
-    <!-- Step pills -->
-    <div style="display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:20px;">
-      <div id="sPill1" style="background:var(--g);color:#fff;border-radius:50px;padding:5px 18px;font-size:12px;font-weight:900;">① Pay</div>
-      <div style="width:30px;height:2px;background:#ddd;"></div>
-      <div id="sPill2" style="background:#eee;color:#aaa;border-radius:50px;padding:5px 18px;font-size:12px;font-weight:900;">② Enter UTR</div>
-    </div>
-
-    <!-- ══ STEP 1 — PAY ══ -->
-    <div id="upiStep1">
-      <div style="font-size:40px;margin-bottom:6px;">💳</div>
-      <h2 style="font-size:19px;font-weight:900;margin-bottom:4px;">Pay via UPI</h2>
-      <p style="color:#999;font-size:12px;margin-bottom:16px;">Tap your app below — amount is pre-filled</p>
-
-      <!-- Amount box -->
-      <div style="background:var(--gl);border-radius:14px;padding:14px 16px;margin-bottom:16px;border:2px solid rgba(37,211,102,.2);text-align:left;">
-        <div style="font-size:11px;color:#888;text-transform:uppercase;font-weight:800;margin-bottom:2px;">Amount to Pay</div>
-        <div id="upiAmt" style="font-size:32px;font-weight:900;color:var(--g);">₹0</div>
-        <div style="font-size:12px;color:#666;margin-top:5px;">UPI ID: <strong id="upiUpiId" style="color:#222;"></strong></div>
-        <div style="font-size:11px;color:#999;margin-top:2px;" id="upiNameDisp"></div>
-      </div>
-
-      <!-- UPI app buttons -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px;">
-        <button onclick="openUpiApp('gpay')" style="background:#fff;border:2px solid #eee;border-radius:14px;padding:13px 8px;cursor:pointer;font-family:inherit;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;">🟢 GPay</button>
-        <button onclick="openUpiApp('phonepe')" style="background:#fff;border:2px solid #eee;border-radius:14px;padding:13px 8px;cursor:pointer;font-family:inherit;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;">🟣 PhonePe</button>
-        <button onclick="openUpiApp('paytm')" style="background:#fff;border:2px solid #eee;border-radius:14px;padding:13px 8px;cursor:pointer;font-family:inherit;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;">🔵 Paytm</button>
-        <button onclick="openUpiApp('any')" style="background:#fff;border:2px solid #eee;border-radius:14px;padding:13px 8px;cursor:pointer;font-family:inherit;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;">📱 Other UPI</button>
-      </div>
-
-      <!-- Mobile number pay option (shown only if UPI_MOBILE is set) -->
-      <div id="mobilePaySection" style="display:none;margin-bottom:10px;">
-        <div style="font-size:11px;font-weight:900;color:#888;text-transform:uppercase;margin-bottom:6px;text-align:left;">Or pay to mobile number</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
-          <button onclick="openUpiMobile('gpay')" style="background:linear-gradient(135deg,#e8f5e9,#fff);border:2px solid #a5d6a7;border-radius:14px;padding:13px 8px;cursor:pointer;font-family:inherit;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;gap:5px;">🟢 GPay #</button>
-          <button onclick="openUpiMobile('phonepe')" style="background:linear-gradient(135deg,#ede7f6,#fff);border:2px solid #ce93d8;border-radius:14px;padding:13px 8px;cursor:pointer;font-family:inherit;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;gap:5px;">🟣 PhonePe #</button>
-        </div>
-        <div style="font-size:10px;color:#aaa;text-align:center;margin-top:5px;">Pays directly to registered mobile number</div>
-      </div>
-
-      <div style="background:#fff8e1;border-radius:10px;padding:10px 12px;margin-bottom:16px;border:1px solid #ffe082;text-align:left;">
-        <p style="font-size:12px;color:#7c5800;margin:0;line-height:1.7;">
-          1️⃣ Tap your UPI app above<br>
-          2️⃣ Complete the payment<br>
-          3️⃣ Come back here &amp; tap <strong>"Paid → Enter UTR"</strong>
-        </p>
-      </div>
-
-      <div style="display:flex;gap:10px;">
-        <button onclick="cancelPayment()" style="flex:1;background:#f2f2f2;border:none;border-radius:12px;padding:13px;font-family:inherit;font-weight:800;font-size:14px;cursor:pointer;">✕ Cancel</button>
-        <button onclick="goToUtrStep()" style="flex:2;background:linear-gradient(135deg,var(--gd),var(--g));color:#fff;border:none;border-radius:12px;padding:13px;font-family:inherit;font-weight:900;font-size:15px;cursor:pointer;">Paid → Enter UTR</button>
-      </div>
-    </div>
-
-    <!-- ══ STEP 2 — ENTER UTR ══ -->
-    <div id="upiStep2" style="display:none;">
-      <div style="font-size:40px;margin-bottom:6px;">🔢</div>
-      <h2 style="font-size:19px;font-weight:900;margin-bottom:4px;">Enter UTR Number</h2>
-      <p style="color:#999;font-size:12px;margin-bottom:6px;">The 12-digit transaction ID from your UPI app</p>
-
-      <!-- How to find UTR -->
-      <div style="background:#e3f2fd;border-radius:12px;padding:12px 14px;margin-bottom:16px;text-align:left;border:1px solid #90caf9;">
-        <div style="font-size:11px;font-weight:900;color:#0d47a1;margin-bottom:6px;">📍 HOW TO FIND YOUR UTR NUMBER</div>
-        <div style="font-size:12px;color:#1565c0;line-height:1.8;">
-          <b>GPay:</b> Open GPay → Tap the payment → See "UPI transaction ID"<br>
-          <b>PhonePe:</b> History → Tap payment → "Transaction ID"<br>
-          <b>Paytm:</b> Passbook → Tap payment → "UTR No."<br>
-          <b>Bank app:</b> Transactions → Tap payment → UTR / Ref No.
-        </div>
-      </div>
-
-      <!-- UTR input -->
-      <div style="margin-bottom:8px;text-align:left;">
-        <label style="font-size:11px;font-weight:900;color:#777;text-transform:uppercase;display:block;margin-bottom:6px;">UTR / Transaction ID *</label>
-        <input id="utrInput" class="inp" placeholder="e.g. 123456789012" maxlength="22"
-          style="font-size:18px;font-weight:900;letter-spacing:2px;text-align:center;"
-          oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase()">
-        <div id="utrErr" style="color:#e53935;font-size:11px;margin-top:5px;display:none;">⚠️ Please enter a valid UTR number (at least 8 characters)</div>
-      </div>
-
-      <!-- Summary -->
-      <div style="background:var(--gl);border-radius:12px;padding:12px 14px;margin-bottom:16px;border:1.5px solid rgba(37,211,102,.2);text-align:left;">
-        <div style="font-size:11px;font-weight:900;color:#888;text-transform:uppercase;margin-bottom:6px;">Order Summary</div>
-        <div id="utrSummary" style="font-size:12px;color:#555;line-height:1.8;"></div>
-        <div style="display:flex;justify-content:space-between;margin-top:8px;font-weight:900;font-size:15px;border-top:1px solid rgba(37,211,102,.2);padding-top:8px;">
-          <span>Total Paid</span><span id="utrTotal" style="color:var(--g);">₹0</span>
-        </div>
-      </div>
-
-      <div style="display:flex;gap:10px;">
-        <button onclick="backToPayStep()" style="flex:1;background:#f2f2f2;border:none;border-radius:12px;padding:13px;font-family:inherit;font-weight:800;font-size:14px;cursor:pointer;">← Back</button>
-        <button id="confirmBtn" onclick="confirmPaidAndPlaceOrder()" style="flex:2;background:linear-gradient(135deg,var(--gd),var(--g));color:#fff;border:none;border-radius:12px;padding:13px;font-family:inherit;font-weight:900;font-size:15px;cursor:pointer;">✅ Confirm Order</button>
-      </div>
-    </div>
-
-  </div>
-</div>
 
 <!-- ══ SUCCESS ══ -->
 <div id="successOvrl" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:800;align-items:center;justify-content:center;padding:20px;">
@@ -342,11 +242,7 @@ html,body{font-family:'Nunito',sans-serif;background:var(--bg);max-width:480px;m
 <script>
 // ── CONFIG ──────────────────────────────────────────────────
 const APPS_URL = 'https://script.google.com/macros/s/AKfycbzTKyc_YgVy6DiNNHvHvQiX8rnAFpsI2d-yruKCxquwbwOjbW1ufmzAIDAOoznrO9tD/exec';
-const UPI_ID   = 'adnanrasheed00007@okicici';        // ← YOUR UPI ID (e.g. 9876543210@ybl or tryito@okaxis)
-const UPI_NAME = 'Adnaan Rasheed'; // ← Your name as shown in UPI apps
-// MOBILE NUMBER UPI — set your 10-digit mobile number to enable this option
-// Allows customers to pay to your registered mobile number directly
-const UPI_MOBILE = '8943947822';  // ← e.g. '9876543210' (your GPay/PhonePe registered number)
+
 
 // ── STATE ────────────────────────────────────────────────────
 let menu=[], banners=[], offerCardsData=[], cart={}, curCat='All', popId=null, bannerIdx=0, bannerTimer=null;
@@ -653,10 +549,10 @@ function openCheckout(){
 }
 function closeCheckout(){q('coOvrl').style.display='none';}
 
-// ── UPI PAYMENT FLOW ────────────────────────────────────────
+// ── COD ORDER FLOW ──────────────────────────────────────────
 let pendingOrder = null;
 
-function goToPayment(){
+async function goToPayment(){
   const name=q('cName').value.trim(), phone=q('cPhone').value.trim(),
         email=q('cEmail').value.trim(), addr=q('cAddr').value.trim(),
         notes=q('cNotes').value.trim();
@@ -664,116 +560,27 @@ function goToPayment(){
   const items=entries().map(({item,q:qty})=>({name:item.name,qty,price:item.price}));
   const total=items.reduce((s,i)=>s+i.price*i.qty,0);
   pendingOrder={customer:{name,phone,email,address:addr,notes},items,total,timestamp:new Date().toISOString()};
-  closeCheckout();
-  // Fill modal
-  q('upiAmt').textContent='₹'+total;
-  q('upiUpiId').textContent=UPI_ID;
-  q('upiNameDisp').textContent=UPI_NAME;
-  // Reset to step 1
-  q('upiStep1').style.display='block';
-  q('upiStep2').style.display='none';
-  q('sPill1').style.background='var(--g)'; q('sPill1').style.color='#fff';
-  q('sPill2').style.background='#eee';     q('sPill2').style.color='#aaa';
-  q('utrInput').value='';
-  q('utrErr').style.display='none';
-  q('upiOvrl').style.display='flex';
-  // Show mobile number pay option if configured
-  if(UPI_MOBILE && UPI_MOBILE.length===10){
-    q('mobilePaySection').style.display='block';
-  }
-}
 
-function buildUpiUrl(app){
-  const amt=pendingOrder?pendingOrder.total:0;
-  const note=encodeURIComponent('Tryito Order');
-  const upi=encodeURIComponent(UPI_ID);
-  const nm=encodeURIComponent(UPI_NAME);
-  const base=`upi://pay?pa=${upi}&pn=${nm}&am=${amt}&cu=INR&tn=${note}`;
-  const map={
-    gpay:`gpay://upi/pay?pa=${upi}&pn=${nm}&am=${amt}&cu=INR&tn=${note}`,
-    phonepe:`phonepe://pay?pa=${upi}&pn=${nm}&am=${amt}&cu=INR&tn=${note}`,
-    paytm:`paytmmp://pay?pa=${upi}&pn=${nm}&am=${amt}&cu=INR&tn=${note}`,
-    any:base
-  };
-  return map[app]||base;
-}
-
-function openUpiApp(app){
-  window.location.href=buildUpiUrl(app);
-  setTimeout(()=>{try{window.location.href=buildUpiUrl('any');}catch(e){}},1800);
-}
-
-// Pay to mobile number (bypasses UPI ID limit issues)
-function buildMobileUpiUrl(app){
-  const amt=pendingOrder?pendingOrder.total:0;
-  const note=encodeURIComponent('Tryito Order');
-  const nm=encodeURIComponent(UPI_NAME);
-  // Mobile number UPI uses bank handles - try common ones
-  // GPay uses @ybl (Yes Bank), PhonePe uses @ybl or @ibl
-  const handles={gpay:'ybl', phonepe:'ybl'};
-  const handle=handles[app]||'ybl';
-  const mobileUpi=encodeURIComponent(`${UPI_MOBILE}@${handle}`);
-  const map={
-    gpay:`gpay://upi/pay?pa=${mobileUpi}&pn=${nm}&am=${amt}&cu=INR&tn=${note}`,
-    phonepe:`phonepe://pay?pa=${mobileUpi}&pn=${nm}&am=${amt}&cu=INR&tn=${note}`,
-  };
-  return map[app]||`upi://pay?pa=${mobileUpi}&pn=${nm}&am=${amt}&cu=INR&tn=${note}`;
-}
-
-function openUpiMobile(app){
-  if(!UPI_MOBILE){alert('Mobile number not configured.');return;}
-  window.location.href=buildMobileUpiUrl(app);
-}
-
-function goToUtrStep(){
-  // Fill order summary
-  if(pendingOrder){
-    q('utrSummary').innerHTML=pendingOrder.items.map(i=>`<span style="display:flex;justify-content:space-between;"><span>${i.qty}× ${i.name}</span><span style="font-weight:700;">₹${i.price*i.qty}</span></span>`).join('');
-    q('utrTotal').textContent='₹'+pendingOrder.total;
-  }
-  q('upiStep1').style.display='none';
-  q('upiStep2').style.display='block';
-  q('sPill1').style.background='#e0f7e9'; q('sPill1').style.color='var(--g)';
-  q('sPill2').style.background='var(--g)'; q('sPill2').style.color='#fff';
-  setTimeout(()=>q('utrInput').focus(),200);
-}
-
-function backToPayStep(){
-  q('upiStep1').style.display='block';
-  q('upiStep2').style.display='none';
-  q('sPill1').style.background='var(--g)'; q('sPill1').style.color='#fff';
-  q('sPill2').style.background='#eee';     q('sPill2').style.color='#aaa';
-}
-
-function cancelPayment(){
-  q('upiOvrl').style.display='none';
-  q('coOvrl').style.display='flex';
-}
-
-async function confirmPaidAndPlaceOrder(){
-  const utr=q('utrInput').value.trim();
-  if(utr.length<8){q('utrErr').style.display='block';return;}
-  q('utrErr').style.display='none';
-  if(!pendingOrder)return;
-  const btn=q('confirmBtn');
+  const btn=q('placeBtn');
   btn.disabled=true; btn.textContent='⏳ Placing order...';
-  // Attach UTR to order
-  const orderData={action:'placeOrder',...pendingOrder,utr,paymentStatus:'Paid - UTR: '+utr};
+
+  const orderData={action:'placeOrder',...pendingOrder,utr:'COD',paymentStatus:'Cash on Delivery'};
   try{
     const res=await fetch(APPS_URL,{method:'POST',body:JSON.stringify(orderData)});
     const data=await res.json();
     const orderId=data.orderId||(Math.floor(Math.random()*9000)+1000);
-    showSuccess(orderId, utr);
+    closeCheckout();
+    showSuccess(orderId);
   }catch(e){
-    // Demo mode / no API — still show success
-    showSuccess(Math.floor(Math.random()*9000)+1000, utr);
+    closeCheckout();
+    showSuccess(Math.floor(Math.random()*9000)+1000);
   }
-  btn.disabled=false; btn.textContent='✅ Confirm Order';
+  btn.disabled=false; btn.textContent='Place Order 🛵';
+  pendingOrder=null;
 }
 
-function showSuccess(orderId, utr){
-  q('upiOvrl').style.display='none';
-  q('succId').innerHTML=`Order #${orderId}<br><span style="font-size:12px;font-weight:600;color:#888;letter-spacing:1px;">UTR: ${utr}</span>`;
+function showSuccess(orderId){
+  q('succId').innerHTML=`Order #${orderId}<br><span style="font-size:13px;font-weight:600;color:#888;">💵 Pay when delivered</span>`;
   q('successOvrl').style.display='flex';
   cart={};updateCartBar();renderMenu();
   ['cName','cPhone','cEmail','cNotes'].forEach(id=>q(id).value='');
