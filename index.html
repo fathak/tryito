@@ -231,10 +231,10 @@ html,body{font-family:'Nunito',sans-serif;background:var(--bg);max-width:480px;m
 <div id="successOvrl" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:800;align-items:center;justify-content:center;padding:20px;">
   <div style="background:#fff;border-radius:22px;padding:36px;text-align:center;max-width:340px;width:100%;animation:popIn .3s;">
     <div style="font-size:60px;margin-bottom:10px;">🎉</div>
-    <h2 style="font-size:22px;font-weight:900;color:var(--g);margin-bottom:8px;">Order Confirmed!</h2>
-    <p style="color:#888;font-size:13px;margin-bottom:18px;">Payment received. We'll start preparing your food!</p>
+    <h2 style="font-size:22px;font-weight:900;color:var(--g);margin-bottom:8px;">Order Placed! 🛵</h2>
+    <p style="color:#888;font-size:13px;margin-bottom:18px;">We'll confirm your order shortly and get it ready!</p>
     <div id="succId" style="background:var(--gl);border-radius:10px;padding:12px;font-weight:900;color:var(--g);font-size:16px;margin-bottom:18px;"></div>
-    <p style="font-size:11px;color:#bbb;margin-bottom:18px;">📧 Confirmation email sent!</p>
+    <p style="font-size:11px;color:#bbb;margin-bottom:18px;">📞 Our team will call to confirm your order</p>
     <button style="background:linear-gradient(135deg,var(--gd),var(--g));color:#fff;border:none;border-radius:12px;padding:12px 30px;font-family:inherit;font-weight:900;font-size:15px;cursor:pointer;" onclick="document.getElementById('successOvrl').style.display='none'">Continue Shopping</button>
   </div>
 </div>
@@ -580,7 +580,7 @@ async function goToPayment(){
 }
 
 function showSuccess(orderId){
-  q('succId').innerHTML=`Order #${orderId}<br><span style="font-size:13px;font-weight:600;color:#888;">💵 Pay when delivered</span>`;
+  q('succId').innerHTML=`Order #${orderId}<br><span style="font-size:13px;font-weight:600;color:#888;">💵 Cash on Delivery</span>`;
   q('successOvrl').style.display='flex';
   cart={};updateCartBar();renderMenu();
   ['cName','cPhone','cEmail','cNotes'].forEach(id=>q(id).value='');
